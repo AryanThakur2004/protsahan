@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="musicTalentHuntApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Talent Hunt Registration</title>
+    <style>
+        /* Same CSS as the Paintball registration form */
+        body {
+            font-family: sans-serif;
+            background-color: #111;
+            color: #eee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #222;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            width: 500px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="number"], 
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            background-color: #333;
+            color: #eee;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:disabled {
+            background-color: #777;
+            cursor: not-allowed;
+        }
+
+        button:hover:enabled {
+            background-color: #45a049;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .success-window {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #222;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            width: 300px;
+            text-align: center;
+            display: none; /* Hidden by default */
+        }
+
+        .success-window.show {
+            display: block;
+        }
+
+        .success-window h2 {
+            margin-top: 0;
+        }
+
+        .success-window button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Music Talent Hunt Registration</h1>
+        <form name="musicRegistrationForm" ng-controller="musicRegistrationCtrl" novalidate>
+            <label for="artistName">Artist Name:</label>
+            <input type="text" id="artistName" name="artistName" ng-model="artistName" required>
+            <span class="error" ng-show="musicRegistrationForm.artistName.$dirty && musicRegistrationForm.artistName.$error.required">Artist name is required</span>
+
+            <label for="musicGenre">Music Genre:</label>
+            <select id="musicGenre" name="musicGenre" ng-model="musicGenre" required>
+                <option value="">Select Music Genre</option>
+                <option value="Pop">Pop</option>
+                <option value="Rock">Rock</option>
+                <option value="Jazz">Jazz</option>
+                <option value="Classical">Classical</option>
+            </select>
+            <span class="error" ng-show="musicRegistrationForm.musicGenre.$dirty && musicRegistrationForm.musicGenre.$error.required">Music genre is required</span>
+
+            <label for="songTitle">Song Title:</label>
+            <input type="text" id="songTitle" name="songTitle" ng-model="songTitle" required>
+            <span class="error" ng-show="musicRegistrationForm.songTitle.$dirty && musicRegistrationForm.songTitle.$error.required">Song title is required</span>
+
+            <label for="musicalInstrument">Musical Instrument:</label>
+            <input type="text" id="musicalInstrument" name="musicalInstrument" ng-model="musicalInstrument" required>
+            <span class="error" ng-show="musicRegistrationForm.musicalInstrument.$dirty && musicRegistrationForm.musicalInstrument.$error.required">Musical instrument is required</span>
+
+            <label for="requirements">Requirements:</label>
+            <input type="text" id="requirements" name="requirements" ng-model="requirements " required>
+            <span class="error" ng-show="musicRegistrationForm.requirements.$dirty && musicRegistrationForm.requirements.$error.required">Requirements are required</span>
+
+            <label for="contactEmail">Contact Email:</label>
+            <input type="email" id="contactEmail" name="contactEmail" ng-model="contactEmail" required>
+            <span class="error" ng-show="musicRegistrationForm.contactEmail.$dirty && (musicRegistrationForm.contactEmail.$error.required || musicRegistrationForm.contactEmail.$error.email)">Invalid email</span>
+
+            <label for="contactNumber">Contact Number:</label>
+            <input type="tel" id="contactNumber" name="contactNumber" ng-model="contactNumber" required ng-pattern="/^[0-9]{10}$/">
+            <span class="error" ng-show="musicRegistrationForm.contactNumber.$dirty && (musicRegistrationForm.contactNumber.$error.required || musicRegistrationForm.contactNumber.$error.pattern)">Invalid contact number (must be 10 digits)</span>
+
+            <button type="submit" ng-disabled="musicRegistrationForm.$invalid" ng-click="submitForm()">Submit</button>
+        </form>
+    </div>
+
+    <!-- Success Message Window -->
+    <div class="success-window" id="successWindow">
+        <h2>Successfully Submitted!</h2>
+        <p>Thank you for registering for the music talent hunt.</p>
+        <button ng-click="closeSuccessWindow()">Close</button>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
+    <script>
+        angular.module('musicTalentHuntApp', [])
+            .controller('musicRegistrationCtrl', function($scope, $http) {
+                $scope.artistName = '';
+                $scope.musicGenre = '';
+                $scope.songTitle = '';
+                $scope.musicalInstrument = '';
+                $scope.requirements = '';
+                $scope.contactEmail = '';
+                $scope.contactNumber = '';
+                $scope.submitted = false;
+
+                // Function to submit the form
+                $scope.submitForm = function() {
+                    if ($scope.musicRegistrationForm.$valid) {
+                        var formData = {
+                            artistName: $scope.artistName,
+                            musicGenre: $scope.musicGenre,
+                            songTitle: $scope.songTitle,
+                            musicalInstrument: $scope.musicalInstrument,
+                            requirements: $scope.requirements,
+                            contactEmail: $scope.contactEmail,
+                            contactNumber: $scope.contactNumber
+                        };
+
+                        // Simulate an HTTP POST request for form submission
+                        $http.post('/submit-form', formData)
+                            .then(function(response) {
+                                // Show the success message after submission
+                                document.getElementById('successWindow').classList.add('show');
+                            })
+                            .catch(function(error) {
+                                console.error('Error during form submission:', error);
+                            });
+                    }
+                };
+
+                // Function to close the success window
+                $scope.closeSuccessWindow = function() {
+                    document.getElementById('successWindow').classList.remove('show');
+                    $scope.resetForm();
+                };
+
+                // Function to reset the form
+                $scope.resetForm = function() {
+                    $scope.artistName = '';
+                    $scope.musicGenre = '';
+                    $scope.songTitle = '';
+                    $scope.musicalInstrument = '';
+                    $scope.requirements = '';
+                    $scope.contactEmail = '';
+                    $scope.contactNumber = '';
+                    $scope.musicRegistrationForm.$setPristine();
+                    $scope.musicRegistrationForm.$setUntouched();
+                };
+            });
+    </script>
+</body>
+</html>

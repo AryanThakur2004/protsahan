@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="terminatorRegistrationApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protsahan Terminator Registration</title>
+    <style>
+        /* Same CSS as the Paintball registration form */
+        body {
+            font-family: sans-serif;
+            background-color: #111;
+            color: #eee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #222;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            width: 500px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="number"], 
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            background-color: #333;
+            color: #eee;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:disabled {
+            background-color: #777;
+            cursor: not-allowed;
+        }
+
+        button:hover:enabled {
+            background-color: #45a049;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .success-window {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #222;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            width: 300px;
+            text-align: center;
+            display: none; /* Hidden by default */
+        }
+
+        .success-window.show {
+            display: block;
+        }
+
+        .success-window h2 {
+            margin-top: 0;
+        }
+
+        .success-window button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Protsahan Terminator Registration</h1>
+        <form name="terminatorRegistrationForm" ng-controller="terminatorRegistrationCtrl" novalidate>
+            <label for="teamName">Team Name:</label>
+            <input type="text" id="teamName" name="teamName" ng-model="teamName" required>
+            <span class="error" ng-show="terminatorRegistrationForm.teamName.$dirty && terminatorRegistrationForm.teamName.$error.required">Team name is required</span>
+
+            <label for="teamDescription">Team Description:</label>
+            <textarea id="teamDescription" name="teamDescription" ng-model="teamDescription" rows="5" required></textarea>
+            <span class="error" ng-show="terminatorRegistrationForm.teamDescription.$dirty && terminatorRegistrationForm.teamDescription.$error.required">Team description is required</span>
+
+            <label for="contactName">Contact Name:</label>
+            <input type="text" id="contactName" name="contactName" ng-model="contactName" required>
+            <span class="error" ng-show="terminatorRegistrationForm.contactName.$dirty && terminatorRegistrationForm.contactName.$error.required">Contact name is required</span>
+
+            <label for="contactEmail">Contact Email:</label>
+            <input type="email" id="contactEmail" name="contactEmail" ng-model="contactEmail" required>
+            <span class="error" ng-show="terminatorRegistrationForm.contactEmail.$dirty && (terminatorRegistrationForm.contactEmail.$error.required || terminatorRegistrationForm.contactEmail.$error.email)">Invalid email</span>
+
+            <label for="contactNumber">Contact Number:</label>
+            <input type="tel" id="contactNumber" name="contactNumber" ng-model="contactNumber" required ng-pattern="/^[0-9]{10}$/">
+            <span class="error" ng-show="terminatorRegistrationForm.contactNumber.$dirty && (terminator RegistrationForm.contactNumber.$error.required || terminatorRegistrationForm.contactNumber.$error.pattern)">Invalid contact number (must be 10 digits)</span>
+
+            <label for="playerCount">Number of Players:</label>
+            <input type="number" id="playerCount" name="playerCount" ng-model="playerCount" required min="2" max="4" ng-change="addPlayerFields(); calculateTotalPrice()">
+            <span class="error" ng-show="terminatorRegistrationForm.playerCount.$dirty && (terminatorRegistrationForm.playerCount.$error.required || terminatorRegistrationForm.playerCount.$error.min || terminatorRegistrationForm.playerCount.$error.max)">Invalid player count (must be between 2 and 4)</span>
+
+            <div ng-repeat="player in players track by $index">
+                <label for="playerName{{$index}}">Player {{ $index + 1 }} Name:</label>
+                <input type="text" id="playerName{{$index}}" name="playerName{{$index}}" ng-model="player.name" required>
+                <span class="error" ng-show="terminatorRegistrationForm['playerName' + $index].$dirty && terminatorRegistrationForm['playerName' + $index].$error.required">Player name is required</span>
+            </div>
+
+            <label for="gameMode">Game Mode:</label>
+            <select id="gameMode" name="gameMode" ng-model="gameMode" required>
+                <option value="">Select Game Mode</option>
+                <option value="Single Elimination">Single Elimination</option>
+                <option value="Double Elimination">Double Elimination</option>
+                <option value="Round Robin">Round Robin</option>
+            </select>
+            <span class="error" ng-show="terminatorRegistrationForm.gameMode.$dirty && terminatorRegistrationForm.gameMode.$error.required">Game mode is required</span>
+
+            <label for="gameDuration">Game Duration:</label>
+            <input type="number" id="gameDuration" name="gameDuration" ng-model="gameDuration" required min="10" max="60">
+            <span class="error" ng-show="terminatorRegistrationForm.gameDuration.$dirty && (terminatorRegistrationForm.gameDuration.$error.required || terminatorRegistrationForm.gameDuration.$error.min || terminatorRegistrationForm.gameDuration.$error.max)">Invalid game duration (must be between 10 and 60 minutes)</span>
+
+            <h2>Registration Fee Details</h2>
+            <p>The registration fee for the Terminator event is <b>Rs. 500 per player</b>. The total registration fee will be calculated based on the number of players in your team.</p>
+
+            <label for="totalPrice">Total Price:</label>
+            <input type="text" id="totalPrice" name="totalPrice" ng-model="totalPrice" readonly>
+
+            <button type="submit" ng-disabled="terminatorRegistrationForm.$invalid" ng-click="submitForm()">Submit</button>
+        </form>
+    </div>
+
+    <!-- Success Message Window -->
+    <div class="success-window" id="successWindow">
+        <h2>Successfully Submitted!</h2>
+        <p>Thank you for registering your team for Terminator.</p>
+        <button ng-click="closeSuccessWindow()">Close</button>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
+    <script>
+        angular.module('terminatorRegistrationApp', [])
+            .controller('terminatorRegistrationCtrl', function($scope, $http) {
+                $scope.teamName = '';
+                $scope.teamDescription = '';
+                $scope.contactName = '';
+                $scope.contactEmail = '';
+                $scope.contactNumber = '';
+                $scope.playerCount = '';
+                $scope.players = [];
+                $scope.gameMode = '';
+                $scope.gameDuration = '';
+                $scope.totalPrice = '';
+                $scope.submitted = false;
+
+                // Function to add player fields
+                $scope.addPlayerFields = function() {
+                    $scope.players = [];
+                    for (var i = 0; i < $scope.playerCount; i++) {
+                        $scope.players.push({ name: '' });
+                    }
+                };
+
+                // Function to calculate total price
+                $scope.calculateTotalPrice = function() {
+                    $scope.totalPrice = $scope.playerCount * 500;
+                };
+
+                // Function to submit the form
+                $scope.submitForm = function() {
+                    if ($scope.terminatorRegistrationForm.$valid) {
+                        var formData = {
+                            teamName: $scope.teamName,
+                            teamDescription: $scope.teamDescription,
+                            contactName: $scope.contactName,
+                            contactEmail: $scope.contactEmail,
+                            contactNumber: $scope.contactNumber,
+                            playerCount: $scope.playerCount,
+                            players: $scope.players,
+                            gameMode: $scope.gameMode,
+                             gameDuration: $scope.gameDuration
+                        };
+
+                        // Simulate an HTTP POST request for form submission
+                        $http.post('/submit-form', formData)
+                            .then(function(response) {
+                                // Show the success message after submission
+                                document.getElementById('successWindow').classList.add('show');
+                            })
+                            .catch(function(error) {
+                                console.error('Error during form submission:', error);
+                            });
+                    }
+                };
+
+                // Function to close the success window
+                $scope.closeSuccessWindow = function() {
+                    document.getElementById('successWindow').classList.remove('show');
+                    $scope.resetForm();
+                };
+
+                // Function to reset the form
+                $scope.resetForm = function() {
+                    $scope.teamName = '';
+                    $scope.teamDescription = '';
+                    $scope.contactName = '';
+                    $scope.contactEmail = '';
+                    $scope.contactNumber = '';
+                    $scope.playerCount = '';
+                    $scope.players = [];
+                    $scope.gameMode = '';
+                    $scope.gameDuration = '';
+                    $scope.totalPrice = '';
+                    $scope.terminatorRegistrationForm.$setPristine();
+                    $scope.terminatorRegistrationForm.$setUntouched();
+                };
+            });
+    </script>
+</body>
+</html>

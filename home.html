@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Protsahan 15th Edition</title>
+  <style>
+    body {
+      background-color: #111;
+      color: #fff;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden; /* Prevent scrollbars */
+      position: relative; /* Position relative for absolute children */
+    }
+
+    /* Video background styles */
+    .video-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1; /* Send video to the back */
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      width: 80%;
+      max-width: 1200px;
+      margin: 0 auto;
+      opacity: 1; /* Ensure the container is visible */
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      font-size: 3em;
+    }
+
+    .header p {
+      font-size: 1.2em;
+      margin-bottom: 20px;
+    }
+
+    .header img.logo {
+      width: 300px;
+      height: 200px;
+      border-radius: 50%;
+      margin-bottom: 20px;
+    }
+
+    .section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 30px;
+    }
+
+    .item,
+    .card {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 30px;
+      width: 200px;
+      height: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      text-align: center;
+      transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out; /* Added opacity transition */
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      cursor: pointer; /* Add cursor pointer */
+    }
+
+    .item:hover,
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      opacity: 1; /* Full opacity on hover */
+      color: black; /* Change text color to black */
+    }
+
+    .item img,
+    .card img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      filter: drop-shadow(0 0 5px #00ff00);
+    }
+
+    .item h2,
+    .card h2 {
+      font-size: 1.5em;
+      margin-top: 10px;
+    }
+
+    .item p,
+    .card p {
+      font-size: 1em;
+      margin-bottom: 10px;
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .button {
+      background-color: #00ff00;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 20px;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease-in-out;
+    }
+
+    .button:hover {
+      background-color: #00cc00;
+    }
+
+    .card-container {
+      display: none; /* Hide the card container by default */
+      flex-wrap: wrap;
+      justify-content: space-around;
+      width: 100%;
+      margin-bottom: 30px;
+    }
+
+    /* Style for the new page */
+    .new-page {
+      display: none; /* Hide the new page by default */
+      position: fixed; /* Make it fixed positioned */
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100; /* Ensure it's on top */
+    }
+
+    .new-page-content {
+      background-color: #222;
+      border-radius: 10px;
+      padding: 20px;
+      width: 80%;
+      max-width: 800px;
+      text-align: center;
+    }
+
+    .close-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #ff0000;
+      border: none;
+      border-radius: 5px;
+      padding: 5px 10px;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <video id="video1" autoplay muted loop class="video-bg">
+    <source src="C:\Users\OM BISCUITWALA\Desktop\protsahan\Protsahan.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <div class="container">
+    <div class="header">
+      <img src="loho prot.jpg" alt="Logo" class="logo">
+      <h1>PROTSAHAN 15th Edition</h1>
+      <p>Step into the 15th Edition of protsahan and dive into the powerful Fusion of entertainment and excitement.</p>
+    </div>
+
+    <div class="section">
+      <div class="item" id="events-item">
+        <img src="https://img.icons8.com/ios-filled/50/000000/event.png" alt="Events">
+        <h2>Events</h2>
+        <p>Join us for a series of engaging events.</p>
+      </div>
+      <div class="item" id="competitions-item">
+        <img src="https://img.icons8.com/ios-filled/50/000000/trophy.png" alt="Competitions">
+        <h2>Competitions</h2>
+        <p>Put your skills to the test and compete in our exciting challenges.</p>
+      </div>
+      <div class="item">
+        <img src="https://img.icons8.com/ios-filled/50/000000/settings--v1.png" alt="Workshops">
+        <h2>Stalls</h2>
+        <p>Build your own stalls</p>
+        <div class="button-container">
+          <button class="button" id="stall-register">Register</button>
+          <button class="button" id="stall-explore">Explore</button>
+        </div>
+      </div>
+      <div class ="item">
+        <img src="https://img.icons8.com/ios-filled/50/000000/phone.png" alt="Contact Us">
+        <h2>Contact Us</h2>
+        <p>Get in touch with us to learn more.</p>
+      </div>
+    </div>
+
+    <div class="card-container" id="card-container-events">
+      <!-- Events cards -->
+      <div class="card">
+        <img src="https://img.icons8.com/ios-filled/50/000000/paintball.png" alt="Paintball">
+        <h2>PAINTBALL</h2>
+        <p>play and have fun</p>
+        <div class="button-container">
+          <button class="button" id="paintball-register">Register</button>
+          <button class="button" id="paintball-explore">Explore</button>
+        </div>
+      </div>
+      <div class="card">
+        <img src="https://img.icons8.com/ios-filled/50/000000/robot.png" alt="Terminator">
+        <h2>TERMINATOR</h2>
+        <p>play and have fun</p>
+        <div class="button-container">
+          <button class="button" id="terminator-register">Register</button>
+          <button class="button" id="terminator-explore">Explore</button>
+        </div>
+      </div>
+      <div class="card">
+        <img src="soccer_ball_no_background.png" alt="Football">
+        <h2>FOOTBALL</h2>
+        <p>play and have fun</p>
+        <div class="button-container">
+          <button class="button" id="football-register">Register</button>
+          <button class="button" id="football-explore">Explore</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-container" id="card-container-competitions" style="display: none;">
+      <!-- Competitions cards -->
+      <div class="card">
+        <img src="processed_image .png" alt="Dance">
+        <h2>DANCE</h2>
+        <p>showcase your moves</p>
+        <div class="button-container">
+          <button class="button" id="dance-register">Register</button>
+          <button class="button" id="dance-explore">Explore</button>
+        </div>
+      </div>
+      <div class="card">
+        <img src="https://img.icons8.com/ios-filled/50/000000/music.png" alt="Music">
+        <h2>MUSIC</h2>
+        <p>harmonize with us</p>
+        <div class="button-container">
+          <button class="button" id="music-register">Register</button>
+          <button class="button" id="music-explore">Explore</button>
+        </div>
+      </div>
+      <div class="card">
+        <img src="image_no_background.png" alt="INDIGENOUS">
+        <h2>INDIGENOUS</h2>
+        <p>explore more</p>
+        <div class="button-container">
+          <button class="button" id="indigenous-register">Register</button>
+          <button class="button" id="indigenous-explore">Explore</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Add event listener to the "Events" item
+      document.getElementById("events-item").addEventListener("click", function() {
+        // Toggle the visibility of the card container
+        document.getElementById("card-container-events").style.display = document.getElementById("card-container-events").style.display === "flex" ? "none" : "flex";
+        // Hide the competitions card container if it's open
+        document.getElementById("card-container-competitions").style.display = "none";
+      });
+
+      // Add event listener to the "Competitions" item
+      document.getElementById("competitions-item").addEventListener("click", function() {
+        // Toggle the visibility of the card container
+        document.getElementById("card-container-competitions").style.display = document.getElementById("card-container-competitions").style.display === "flex" ? "none" : "flex";
+        // Hide the events card container if it's open
+        document.getElementById("card-container-events").style.display = "none";
+      });
+
+      // Event listener for the "Register" button in the stalls item
+      document.getElementById("stall-register").addEventListener("click", function() {
+        window.location.href = "stall-registration.html";
+      });
+
+      // Event listener for Paintball Register button
+      document.getElementById("paintball-register").addEventListener("click", function() {
+        window.location.href = "paintball-registration.html";
+      });
+
+      // Event listener for Terminator Register button
+      document.getElementById("terminator-register").addEventListener("click", function() {
+        window.location.href = "terminator-registration.html";
+      });
+
+      // Event listener for Football Register button
+      document.getElementById("football-register").addEventListener("click", function() {
+        window.location.href = "football-registration.html";
+      });
+
+      // Event listener for Music Register button
+      document.getElementById("music-register").addEventListener("click", function() {
+        window.location.href = "music-registration.html";
+      });
+
+      // Event listener for Dance Register button
+      document.getElementById("dance-register").addEventListener("click", function() {
+        window.location.href = "dance-registration.html";
+      });
+
+      // Event listener for Indigenous Register button
+      document.getElementById("indigenous-register").addEventListener("click", function() {
+        window.location.href = "indigenous-registration.html";
+      });
+
+      // Event listener for the "Explore" button in the stalls item
+      document.getElementById("stall-explore").addEventListener("click", function() {
+        window.location.href = "stall-explore.html";
+      });
+
+      // Event listener for the "Explore" button in Paintball item
+      document.getElementById("paintball-explore").addEventListener("click", function() {
+        window.location.href = "paintball-explore.html";
+      });
+
+      // Event listener for the "Explore" button in Football item
+      document.getElementById("football-explore").addEventListener("click", function() {
+        window.location.href = "football-explore.html";
+      });
+
+      // Event listener for the "Explore" button in Terminator item
+      document.getElementById("terminator-explore").addEventListener("click", function() {
+        window.location.href = "terminator-explore.html";
+      });
+
+      // Event listener for the "Explore" button in Music item
+      document.getElementById("music-explore").addEventListener("click", function() {
+        window.location.href = "music-explore.html";
+      });
+
+      // Event listener for the "Explore" button in Dance item
+      document.getElementById("dance-explore").addEventListener("click", function() {
+        window.location.href = "dance-explore.html";
+      });
+
+      // Event listener for the "Explore" button in Indigenous item
+      document.getElementById("indigenous-explore").addEventListener("click", function() {
+        window.location.href = "indigenous-explore.html";
+      });
+    </script>
+  </div>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="indigenousTalentHuntApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indigenous Talent Hunt Registration</title>
+    <style>
+        /* Same CSS as the Paintball registration form */
+        body {
+            font-family: sans-serif;
+            background-color: #111;
+            color: #eee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #222;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            width: 500px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="number"], 
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            background-color: #333;
+            color: #eee;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:disabled {
+            background-color: #777;
+            cursor: not-allowed;
+        }
+
+        button:hover:enabled {
+            background-color: #45a049;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .success-window {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #222;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            width: 300px;
+            text-align: center;
+            display: none; /* Hidden by default */
+        }
+
+        .success-window.show {
+            display: block;
+        }
+
+        .success-window h2 {
+            margin-top: 0;
+        }
+
+        .success-window button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Indigenous Talent Hunt Registration</h1>
+        <form name="indigenousRegistrationForm" ng-controller="indigenousRegistrationCtrl" novalidate>
+            <label for="artistName">Artist Name:</label>
+            <input type="text" id="artistName" name="artistName" ng-model="artistName" required>
+            <span class="error" ng-show="indigenousRegistrationForm.artistName.$dirty && indigenousRegistrationForm.artistName.$error.required">Artist name is required</span>
+
+            <label for="indigenousGroup">Indigenous Talent:</label>
+            <select id="indigenousGroup" name="indigenousGroup" ng-model="indigenousGroup" required>
+                <option value="">Select Indigenous Talent</option>
+                <option value="Drama">Drama</option>
+                <option value="Shayari">Shayari</option>
+            </select>
+            <span class="error" ng-show="indigenousRegistrationForm.indigenousGroup.$dirty && indigenousRegistrationForm.indigenousGroup.$error.required">Indigenous group is required</span>
+
+            <label for="traditionalSkill">Traditional Skill:</label>
+            <input type="text" id="traditionalSkill" name="traditionalSkill" ng-model="traditionalSkill" required>
+            <span class="error" ng-show="indigenousRegistrationForm.traditionalSkill.$dirty && indigenousRegistrationForm.traditionalSkill.$error.required">Traditional skill is required</span>
+
+            <label for="requirements">Requirements:</label>
+            <input type="text" id="requirements" name="requirements" ng-model="requirements" required>
+            <span class="error" ng-show="indigenousRegistrationForm.requirements.$dirty && indigenousRegistrationForm.requirements.$error.required">Requirements are required</span>
+
+            <label for="contactEmail">Contact Email:</label>
+            <input type="email" id="contactEmail" name="contactEmail" ng-model="contactEmail" required>
+            <span class="error" ng-show="indigenousRegistrationForm.contactEmail.$dirty && (indigenousRegistrationForm.contactEmail.$error.required || indigenousRegistrationForm.contactEmail.$error.email)">Invalid email</span>
+
+            <label for="contactNumber">Contact Number:</label>
+            <input type="tel" id="contactNumber" name="contactNumber" ng-model="contactNumber" required ng-pattern="/^[0-9]{10}$/">
+            <span class="error" ng-show="indigenousRegistrationForm.contactNumber.$dirty && (indigenousRegistrationForm.contactNumber.$error.required || indigenousRegistrationForm.contactNumber.$error.pattern)">Invalid contact number (must be 10 digits)</span>
+
+            <button type="submit" ng-disabled="indigenousRegistrationForm.$invalid" ng-click="submitForm()">Submit</button>
+        </form>
+    </div>
+
+    <!-- Success Message Window -->
+    <div class="success-window" id="successWindow">
+        <h2>Successfully Submitted!</h2>
+        <p>Thank you for registering for the indigenous talent hunt.</p>
+        <button ng-click="closeSuccessWindow()">Close</button>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
+    <script>
+       angular.module('indigenousTalentHuntApp', [])
+    .controller('indigenousRegistrationCtrl', function($scope, $http) {
+        $scope.artistName = '';
+        $scope.indigenousGroup = '';
+        $scope.traditionalSkill = '';
+        $scope.requirements = '';
+        $scope.contactEmail = '';
+        $scope.contactNumber = '';
+
+        $scope.submitForm = function() {
+            if ($scope.indigenousRegistrationForm.$valid) {
+                var formData = {
+                    artistName: $scope.artistName,
+                    indigenousGroup: $scope.indigenousGroup,
+                    traditionalSkill: $scope.traditionalSkill,
+                    requirements: $scope.requirements,
+                    contactEmail: $scope.contactEmail,
+                    contactNumber: $scope.contactNumber
+                };
+
+                // Simulate an HTTP POST request for form submission
+                $http.post('/submit-form', formData)
+                    .then(function(response) {
+                        // Show the success message after submission
+                        document.getElementById('successWindow').classList.add('show');
+                    })
+                    .catch(function(error) {
+                        console.error('Error during form submission:', error);
+                    });
+            }
+        };
+
+        $scope.closeSuccessWindow = function() {
+            document.getElementById('successWindow').classList.remove('show');
+            $scope.indigenousRegistrationForm.$setPristine();
+            $scope.indigenousRegistrationForm.$setUntouched();
+        };
+    });
+    </script>
+</body>
+</html>

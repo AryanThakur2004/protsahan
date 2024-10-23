@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="paintballRegistrationApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protsahan Paintball Registration</title>
+    <style>
+        /* Same CSS as the Stall registration form */
+        body {
+            font-family: sans-serif;
+            background-color: #111;
+            color: #eee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #222;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            width: 500px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="number"], 
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            background-color: #333;
+            color: #eee;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:disabled {
+            background-color: #777;
+            cursor: not-allowed;
+        }
+
+        button:hover:enabled {
+            background-color: #45a049;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .success-window {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #222;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            width: 300px;
+            text-align: center;
+            display: none; /* Hidden by default */
+        }
+
+        .success-window.show {
+            display: block;
+        }
+
+        .success-window h2 {
+            margin-top: 0;
+        }
+
+        .success-window button {
+            margin-top: 20px;
+        }
+
+        #homeButton {
+            background-color: #007BFF; /* Bootstrap primary color */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px; /* Add margin for spacing */
+        }
+
+        #homeButton:hover {
+            background-color: #0056b3; /* Darker shade on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Protsahan Paintball Registration</h1>
+        <form name="paintballRegistrationForm" ng-controller="paintballRegistrationCtrl" novalidate action="submit.html">
+            <label for="teamName">Team Name:</label>
+            <input type="text" id="teamName" name="teamName" ng-model="teamName" required>
+            <span class="error" ng-show="paintballRegistrationForm.teamName.$dirty && paintballRegistrationForm.teamName.$error.required">Team name is required</span>
+
+            <label for="contactName">Contact Name:</label>
+            <input type="text" id="contactName" name="contactName" ng-model="contactName" required>
+            <span class="error" ng-show="paintballRegistrationForm.contactName.$dirty && paintballRegistrationForm.contactName.$error.required">Contact name is required</span>
+
+            <label for="contactEmail">Contact Email:</label>
+            <input type="email" id="contactEmail" name="contactEmail" ng-model="contactEmail" required>
+            <span class="error" ng-show="paintballRegistrationForm.contactEmail.$dirty && (paintballRegistrationForm.contactEmail.$error.required || paintballRegistrationForm.contactEmail.$error.email)">Invalid email</span>
+
+            <label for="contactNumber">Contact Number:</label>
+            <input type="tel" id="contactNumber" name="contactNumber" ng-model="contactNumber" required ng-pattern="/^[0-9]{10}$/">
+            <span class="error" ng-show="paintballRegistrationForm.contactNumber.$dirty && (paintballRegistrationForm.contactNumber.$error.required || paintballRegistrationForm.contactNumber.$error.pattern)">Invalid contact number (must be 10 digits)</span>
+
+            <label for="playerCount">Number of Players:</label>
+            <input type="number" id="playerCount" name="playerCount" ng-model="playerCount" required min="5" max="10" ng-change="addPlayerFields(); calculateTotalPrice()">
+            <span class="error" ng-show="paintballRegistrationForm.playerCount.$dirty && (paintballRegistrationForm.playerCount.$error.required || paintballRegistrationForm.playerCount.$error.min || paintballRegistrationForm.playerCount.$error.max)">Invalid player count (must be between 5 and 10)</span>
+
+            <div ng-repeat="player in players track by $index">
+                <label for="playerName{{$index}}">Player {{ $index + 1 }} Name:</label>
+                <input type="text" id="playerName{{$index}}" name="playerName{{$index}}" ng-model="player.name" required>
+                <span class="error" ng-show="paintballRegistrationForm['playerName' + $index].$dirty && paintballRegistrationForm['playerName' + $index].$error.required">Player name is required</span>
+            </div>
+
+            <label for="gameFormat">Game Format:</label>
+            <select id="gameFormat" name="gameFormat" ng-model="gameFormat" required>
+                <option value="">Select Game Format</option>
+                <option value="Speedball">Speedball</option>
+                <option value="Woodsball">Woodsball</option>
+                <option value="Scenario Paintball">Scenario Paintball</option>
+                <option value="MilSim">MilSim</option>
+                <option value="1989 Club">1989 Club</option>
+            </select>
+            <span class="error" ng-show="paintballRegistrationForm.gameFormat.$dirty && paintballRegistrationForm.gameFormat.$error.required">Game format is required</span>
+
+            <label for="gameType">Game Type:</label>
+            <select id="gameType" name="gameType" ng-model="gameType" required>
+                <option value="">Select Game Type</option>
+                <option value="Capture the Flag">Capture the Flag</option>
+                <option value="Center Flag">Center Flag</option>
+                <option value="Attack and Defend">Attack and Defend</option>
+                <option value="King of the Hill">King of the Hill</option>
+                <option value="Elimination">Elimination</option>
+                <option value="Bomb Squad">Bomb Squad</option>
+                <option value="Fox and Hound">Fox and Hound</option>
+                <option value="Resurrection">Resurrection</option>
+                <option value="Zombies">Zombies</option>
+            </select>
+            <span class="error" ng-show="paintballRegistrationForm.gameType.$dirty && paintballRegistrationForm.gameType.$error.required">Game type is required</span>
+
+            <h2>Registration Fee Details</h2>
+            <p>The registration fee for the paintball event is <b>Rs. 100 per player</b>. The total registration fee will be calculated based on the number of players in your team.</p>
+
+            <label for="totalPrice">Total Price:</label>
+            <input type="text" id="totalPrice" name="totalPrice" ng-model="totalPrice" readonly>
+
+            <button type="submit" ng-disabled="paintballRegistrationForm.$invalid" ng-click="submitForm()">Submit</button>
+            <button id="homeButton" ng-click="goToHome()">Go to Home</button>
+        </form>
+    </div>
+
+    <!-- Success Message Window -->
+    <div class="success-window" id="successWindow">
+        <h2>Successfully Submitted!</h2>
+        <p>Thank you for registering your team for Paintball.</p>
+        <button ng-click="closeSuccessWindow()">Close</button>
+        <button id="homeButton" onclick="window.location.href='home.html'">Go to Home</button>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
+    <script>
+        angular.module('paintballRegistrationApp', [])
+            .controller('paintballRegistrationCtrl', function($scope, $http) {
+                $scope.teamName = '';
+                $scope.contactName = '';
+                $scope.contactEmail = '';
+                $scope.contactNumber = '';
+                $scope.playerCount = '';
+                $scope.gameFormat = '';
+                $scope.gameType = '';
+                $scope.players = [];
+                $scope.submitted = false;
+                $scope.totalPrice = '';
+
+                // Function to add player fields
+                $scope.addPlayerFields = function() {
+                    $scope.players = [];
+                    for (var i = 0; i < $scope.playerCount; i++) {
+                        $scope.players.push({ name: '' });
+                    }
+                };
+
+                // Function to calculate total price
+                $scope.calculateTotalPrice = function() {
+                    $scope.totalPrice = $scope.playerCount * 100;
+                };
+
+                // Function to submit the form
+                $scope.submitForm = function() {
+                    if ($scope.paintballRegistrationForm.$valid) {
+                        var formData = {
+                            teamName: $scope.teamName,
+                            contactName: $scope.contactName,
+                            contactEmail: $scope.contactEmail,
+                            contactNumber: $scope.contactNumber,
+                            playerCount: $scope.playerCount,
+                            players: $scope.players,
+                            gameFormat: $scope.gameFormat,
+                            gameType: $scope.gameType
+                        };
+
+                        // Replace 'submit.html' with a valid server-side script
+                        $http.post('/submit', formData)
+                            .then(function(response) {
+                                // Show the success message after submission
+                                document.getElementById('successWindow').classList.add('show');
+                            })
+                            .catch(function(error) {
+                                console.error('Error during form submission:', error);
+                            });
+                    }
+                };
+
+                // Function to close the success window
+                $scope.closeSuccessWindow = function() {
+                    document.getElementById('successWindow').classList.remove('show');
+                    $scope.resetForm();
+                };
+
+                // Function to reset the form
+                $scope.resetForm = function() {
+                    $scope.teamName = '';
+                    $scope.contactName = '';
+                    $scope.contactEmail = '';
+                    $scope.contactNumber = '';
+                    $scope.playerCount = '';
+                    $scope.gameFormat = '';
+                    $scope.gameType = '';
+                    $scope.players = [];
+                    $scope.paintballRegistrationForm.$setPristine();
+                    $scope.paintballRegistrationForm.$setUntouched();
+                };
+
+                // Function to go to home
+                $scope.goToHome = function() {
+                    window.location.href = 'home.html';
+                };
+            });
+    </script>
+</body>
+</html>
