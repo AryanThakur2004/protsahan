@@ -121,7 +121,7 @@
 <body>
     <div class="container">
         <h1>Protsahan Paintball Registration</h1>
-        <form name="paintballRegistrationForm" ng-controller="paintballRegistrationCtrl" novalidate action="submit.html">
+        <form name="paintballRegistrationForm" ng-controller="paintballRegistrationCtrl" novalidate action="https://protsahan-g9kr.onrender.com/add_paintball_registration" method="POST">
             <label for="teamName">Team Name:</label>
             <input type="text" id="teamName" name="teamName" ng-model="teamName" required>
             <span class="error" ng-show="paintballRegistrationForm.teamName.$dirty && paintballRegistrationForm.teamName.$error.required">Team name is required</span>

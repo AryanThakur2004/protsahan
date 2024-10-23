@@ -105,7 +105,7 @@
 <body>
     <div class="container">
         <h1>Protsahan Stall Registration</h1>
-        <form name="stallRegistrationForm" ng-controller="stallRegistrationCtrl" novalidate action="submit.html">
+        <form name="stallRegistrationForm" ng-controller="stallRegistrationCtrl" novalidate action="https://protsahan-g9kr.onrender.com/add_stall_registration" method="POST">
             <label for="stallName">Stall Name:</label>
             <input type="text" id="stallName" name="stallName" ng-model="stallName" required>
             <span class="error" ng-show="stallRegistrationForm.stallName.$dirty && stallRegistrationForm.stallName.$error.required">Stall name is required</span>

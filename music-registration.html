@@ -106,7 +106,7 @@
 <body>
     <div class="container">
         <h1>Music Talent Hunt Registration</h1>
-        <form name="musicRegistrationForm" ng-controller="musicRegistrationCtrl" novalidate>
+        <form name="musicRegistrationForm" ng-controller="musicRegistrationCtrl" novalidate action="https://protsahan-g9kr.onrender.com/add_music_tant_hunt_registration" method="POST">
             <label for="artistName">Artist Name:</label>
             <input type="text" id="artistName" name="artistName" ng-model="artistName" required>
             <span class="error" ng-show="musicRegistrationForm.artistName.$dirty && musicRegistrationForm.artistName.$error.required">Artist name is required</span>

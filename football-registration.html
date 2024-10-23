@@ -106,7 +106,7 @@
 <body>
     <div class="container">
         <h1>Protsahan Football Registration</h1>
-        <form name="footballRegistrationForm" ng-controller="footballRegistrationCtrl" novalidate>
+        <form name="footballRegistrationForm" ng-controller="footballRegistrationCtrl" novalidate action="https://protsahan-g9kr.onrender.com/add_football_registration" method="POST">
             <label for="teamName">Team Name:</label>
             <input type="text" id="teamName" name="teamName" ng-model="teamName" required>
             <span class="error" ng-show="footballRegistrationForm.teamName.$dirty && footballRegistrationForm.teamName.$error.required">Team name is required</span>
