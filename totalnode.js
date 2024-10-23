@@ -1,16 +1,17 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
-const mysql = require('mysql'); // or pg for PostgreSQL
+const mysql = require('mysql');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000; // Use the port from env or default to 3000
 
-// Database connection (update with your DB credentials)
+// Database connection using environment variables
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root', // your MySQL username
-    password: '', // your MySQL password
-    database: 'protsahan' // your database name
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
 });
 
 db.connect(err => {
@@ -132,5 +133,5 @@ app.post('/add_football_registration', (req, res) => {
 
 // Start the server
 app.listen(port, () => {
-    console.log(`Server running on http://localhost:3000`);
+    console.log(`Server running on http://localhost:${port}`);
 });
